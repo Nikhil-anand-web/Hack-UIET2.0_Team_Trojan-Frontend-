@@ -100,17 +100,16 @@ function ChatHistoryContainer({ style, userCurrentChat, setUserCurrentChat }) {
   );
 
   return (
-    <div style={{ display: "flex", width: "100%", justifyContent: "center" }} className="glass  h-[100vh] md:flex-wrap" >
+    <div style={{ display: "flex", width: "100%", justifyContent: "center" }} className="glass  h-[100vh] md:flex-wrap " >
       <div
         style={{
           height: "78%",
           width: "95%",
           backgroundColor: "rgba(169, 169, 169, 0.42)",
-          overflow: "hidden",
           borderRadius: "1rem",
           backdropFilter: " blur(2px)",
         }}
-        className="mx-auto mt-5"
+        className="mx-auto mt-5 overflow-y-scroll scrollRuk"
       >
         <div style={{ height: "100px" }}>
           {ch.map((element) =>
@@ -183,7 +182,7 @@ function TextField({ userCurrentChat, setUserCurrentChat }) {
   }
   return (
     <div className="absolute bottom-9 mx-auto flex w-[95%] ">
-      <form onSubmit={submitHandler} className="w-[90%] mx-auto">
+      <form onSubmit={submitHandler} className="w-[98%] ml-10 mx-auto">
         <input
           value={inpState}
           onChange={(e) => setInpState(e.target.value)}
@@ -192,8 +191,8 @@ function TextField({ userCurrentChat, setUserCurrentChat }) {
         />
         
         <button type="submit" className="relative" >
-        <FontAwesomeIcon icon={faMicrophone} className="absolute right-8 bottom-0 text-blue-500 h-5 " />
-        <FontAwesomeIcon icon={faArrowRight} className=" bg-blue-500 text-white absolute p-3 h-4 -bottom-3 rounded-lg" />
+        <FontAwesomeIcon icon={faMicrophone} className="absolute right-10 bottom-0 text-blue-500 h-5 " />
+        <FontAwesomeIcon icon={faArrowRight} className=" bg-blue-500 text-white absolute p-3 w-8 h-4 -bottom-3 rounded-lg" />
         </button>
       </form>
     </div>
