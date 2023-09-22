@@ -7,10 +7,14 @@ import Mki from "./images/Makeinindia.png";
 import LOGO from "./images/ham.png";
 import human from "./images/humanchat.png";
 import aires from "./images/ai2.png";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {faMicrophone , faArrowRight } from '@fortawesome/free-solid-svg-icons'
+
+
 function App() {
   const [userCurrentChat, setUserCurrentChat] = useState("");
   return (
-    <div>
+    <div >
       <Header />
       <ChatHistoryContainer
         userCurrentChat={userCurrentChat}
@@ -32,12 +36,13 @@ function Header({ imageheight, style }) {
     <header
       style={{
         overflow: "hidden",
-        backgroundColor: "#007BFF",
+        background: "linear-gradient(90deg, rgba(255, 141, 30, 1) 0%, rgba(88, 247, 255, 1) 51%, rgba(56, 255, 154, 1) 100%)",
 
-        height: "50px",
+        height: "60px",
         display: "flex",
         justifyContent: "space-between",
       }}
+      className="md:flex-wrap sm:flex-wrap"
     >
       <img style={{ height: "50px", marginLeft: "8px" }} src={justis} alt="" />
       <img style={{ height: "50px", marginLeft: "8px" }} src={LOGO} alt="" />
@@ -95,18 +100,17 @@ function ChatHistoryContainer({ style, userCurrentChat, setUserCurrentChat }) {
   );
 
   return (
-    <div style={{ display: "flex", width: "100%", justifyContent: "center" }}>
+    <div style={{ display: "flex", width: "100%", justifyContent: "center" }} className="glass  h-[100vh] md:flex-wrap" >
       <div
         style={{
-          height: "79vh",
-          width: "91%",
+          height: "78%",
+          width: "95%",
           backgroundColor: "rgba(169, 169, 169, 0.42)",
-
-          overflow: "scroll",
+          overflow: "hidden",
           borderRadius: "1rem",
-          marginTop: "3%",
           backdropFilter: " blur(2px)",
         }}
+        className="mx-auto mt-5"
       >
         <div style={{ height: "100px" }}>
           {ch.map((element) =>
@@ -178,14 +182,19 @@ function TextField({ userCurrentChat, setUserCurrentChat }) {
     setUserCurrentChat((old) => (old = inpState));
   }
   return (
-    <div>
-      <form onSubmit={submitHandler}>
+    <div className="absolute bottom-9 mx-auto flex w-[95%] ">
+      <form onSubmit={submitHandler} className="w-[90%] mx-auto">
         <input
           value={inpState}
           onChange={(e) => setInpState(e.target.value)}
           type="text"
+          className="rounded-lg w-[98%] h-10 mr-3 "
         />
-        <button type="submit">Submit</button>
+        
+        <button type="submit" className="relative" >
+        <FontAwesomeIcon icon={faMicrophone} className="absolute right-8 bottom-0 text-blue-500 h-5 " />
+        <FontAwesomeIcon icon={faArrowRight} className=" bg-blue-500 text-white absolute p-3 h-4 -bottom-3 rounded-lg" />
+        </button>
       </form>
     </div>
   );
