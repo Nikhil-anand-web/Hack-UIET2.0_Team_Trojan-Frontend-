@@ -10,12 +10,44 @@
     border:1px solid rgba(255, 255, 255, 0.18);
     box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
+.glassType2{
+  height: 125%;
+  width: 100%;
+  /* background-color: rgba(169, 169, 169, 0.42); */
+  border-radius: 1rem;
+  /* backdrop-filter:  blur(10px); */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+}
 
 .spinner {
   position: relative;
   width: 22.4px;
   height: 22.4px;
+  /* padding-block: 50px; */
+  
 }
+
+/* Apply styles only if the viewport width is 600px or wider */
+@media (max-width: 500px) {
+  /* CSS rules go here */
+  .spinner {
+    width: 10px;
+    height: 10px;
+  }
+  .glassType2{
+    width: 100%;
+    height: 80%;
+  }
+  #logoHide{
+    /* visibility: hidden; */
+    display: none!important;
+  }
+
+}
+
 
 .spinner::before,
 .spinner::after {
