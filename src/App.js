@@ -8,7 +8,7 @@ import LOGO from "./images/ham.png";
 import human from "./images/humanchat.png";
 import aires from "./images/ai2.png";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import {faMicrophone , faArrowRight } from '@fortawesome/free-solid-svg-icons'
+import {faEllipsis, faPause, faMicrophone , faArrowRight } from '@fortawesome/free-solid-svg-icons'
 
 
 function App() {
@@ -197,4 +197,37 @@ function TextField({ userCurrentChat, setUserCurrentChat }) {
       </form>
     </div>
   );
+}
+
+/* Niche diye functions abhi use nhi huye hain inhe api call ke time hee use karna  */
+/* 1st function --> loading gif over glass effect 
+   2nd function --> Pause button for stopping bot for further generating the answer
+   3rd function --> When the bot is typing we can use this
+
+*/
+
+
+/* Ye component hai ab bus ek loading ka useState variable bna lio bool type starting mein false assign karde fir jab jab fetch kare tab isse true kar aur fetch hone ke baad false karde ye apne apne aap show ho jayega */
+function Spinner (){
+  return(
+    <div className="spinner"></div>
+  )
+}
+
+/* ab ye component ko btn wale mein karliyo bus iske liye bhi vo loading wala state variable try kar sukta hai ye position uss arrow wale ki le lega apne aap */
+function PauseBtn(){
+  return (
+    <div>
+      <FontAwesomeIcon icon={faPause} className=" bg-blue-500 text-white absolute p-3 w-8 h-4 -bottom-3 rounded-lg" />
+    </div>
+  )
+}
+
+/* ab iss function ko har uss ai bot ke aage lagana hai ye bhi tabhi apply karna padega jab ap call ho rhi hogi aur jab bot kuch data type kar rha hoga */
+function Speaking(){
+  return (
+    <div>
+      <FontAwesomeIcon icon={faEllipsis} className=" ml-5 text-white h-5 "/>
+    </div>
+  )
 }
