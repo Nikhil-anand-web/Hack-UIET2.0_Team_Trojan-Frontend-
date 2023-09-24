@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./App.css";
 import justis from "./images/justis.png";
 import skillIndia from "./images/skillindia.png";
@@ -13,18 +13,20 @@ import {
   faPause,
   faMicrophone,
   faArrowRight,
+  faVolumeHigh,
 } from "@fortawesome/free-solid-svg-icons";
+
+import SpeechRecognition, {
+  useSpeechRecognition,
+} from "react-speech-recognition";
 
 function App() {
   const [userCurrentChat, setUserCurrentChat] = useState("");
   return (
     <div>
       <Header />
+
       <ChatHistoryContainer
-        userCurrentChat={userCurrentChat}
-        setUserCurrentChat={setUserCurrentChat}
-      />
-      <TextField
         userCurrentChat={userCurrentChat}
         setUserCurrentChat={setUserCurrentChat}
       />
@@ -39,8 +41,9 @@ function Header({ imageheight, style }) {
     <header
       style={{
         overflow: "hidden",
-        background:
-          "linear-gradient(90deg, rgba(255, 141, 30, 1) 0%, rgba(88, 247, 255, 1) 51%, rgba(56, 255, 154, 1) 100%)",
+        backgroundColor: "rgb(2 25 175)",
+        // backgroundImage:
+        //   "linear-gradient(83.84deg, #0088FF -6.87%, #A033FF 26.54%, #FF5C87 58.58%)",
 
         height: "60px",
         display: "flex",
@@ -67,49 +70,64 @@ function Header({ imageheight, style }) {
   );
 }
 function ChatHistoryContainer({ style, userCurrentChat, setUserCurrentChat }) {
-  const [ch, setCh] = useState([
-    { question: "here is the answer" },
-    { question2: "here is the answer2" },
-    { question2: "here is the answer2" },
-    { question2: "here is the answer2" },
-    { question2: "here is the answer2" },
-    { question2: "here is the answer2" },
-  ]);
+  const [ch, setCh] = useState([]);
+
+  const [err, setErr] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const url = "http://127.0.0.1:8000/";
+  const {
+    transcript,
+    listening,
+    resetTranscript,
+    browserSupportsSpeechRecognition,
+  } = useSpeechRecognition();
   // const url = "google.com";
-
+  const refLast = useRef(null);
   useEffect(
     function caller() {
+      const controlerOfRequest = new AbortController();
       async function fetcher() {
-        const data = {
-          question: userCurrentChat,
-        };
-        const requestOptions = {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json", // Set the content type according to your API's requirements
-          },
-          body: JSON.stringify(data), // Convert data to JSON format
-        };
-        setIsLoading(true);
-        const response = await fetch(url, requestOptions);
-        const datares = await response.json();
-        setIsLoading(false);
-        setCh(datares);
-        console.log(datares);
+        try {
+          const data = {
+            question: userCurrentChat,
+          };
+          const requestOptions = {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json", // Set the content type according to your API's requirements
+            },
+            body: JSON.stringify(data), // Convert data to JSON format
+            signal: controlerOfRequest.signal,
+          };
+          setIsLoading(true);
+          setErr("");
+          const response = await fetch(url, requestOptions);
+          if (!response.ok) {
+            throw new Error("something wents wrong");
+          }
+
+          const datares = await response.json();
+          setIsLoading(false);
+          setCh(datares);
+          console.log(datares);
+        } catch (e) {
+          setIsLoading(false);
+          console.log(e.message);
+          setErr(e.message);
+        }
       }
       if (userCurrentChat !== "") {
         fetcher();
       }
+      return () => controlerOfRequest.abort();
     },
     [userCurrentChat]
   );
 
   return (
     <div
-      style={{ display: "flex", width: "100%", justifyContent: "center" }}
-      className="glass  h-[100vh] md:flex-wrap "
+      style={{ width: "100%", justifyContent: "center" }}
+      className="glass  h-[92vh] md:flex-wrap "
     >
       <div
         style={{
@@ -122,17 +140,38 @@ function ChatHistoryContainer({ style, userCurrentChat, setUserCurrentChat }) {
         className="mx-auto mt-5 overflow-y-scroll scrollRuk"
       >
         <div style={{ height: "100px" }}>
-          {ch.map((element) =>
+          {ch.length === 0 && (
+            <ChatsOfAi
+              disStr={
+                "Hello I am Here to Help You. The More We Talk The More We Get"
+              }
+            />
+          )}
+          {ch.map((element, index) =>
             Object.entries(element).map(([key, value]) => (
               <>
-                <ChatOfHuman disStr={key} />
-                <ChatsOfAi disStr={value} />
+                <ChatOfHuman key={index + "hmn"} disStr={key} />
+                <ChatsOfAi
+                  ref={index === ch.length - 1 ? refLast : null}
+                  key={index + "ai"}
+                  disStr={value}
+                />
               </>
             ))
           )}
+
           {isLoading && <Spinner />}
         </div>
       </div>
+      {listening && <SpeakingGif />}
+      <TextField
+        userCurrentChat={userCurrentChat}
+        listening={listening}
+        setUserCurrentChat={setUserCurrentChat}
+        transcript={transcript}
+        resetTranscript={resetTranscript}
+        browserSupportsSpeechRecognition={browserSupportsSpeechRecognition}
+      />
     </div>
   );
 }
@@ -145,6 +184,7 @@ function ChatsOfAi({ disStr }) {
         justifyContent: "start",
         padding: "1rem",
         borderRadius: "0.65rem",
+        alignItems: "center",
       }}
     >
       <img style={{ height: "50px", marginLeft: "8px" }} src={aires} alt="" />
@@ -152,12 +192,15 @@ function ChatsOfAi({ disStr }) {
         style={{
           color: "white",
           backgroundColor: "rgb(13, 131, 240)",
+          // backgroundImage:
+          //   "linear-gradient(83.84deg, #0088FF -6.87%, #A033FF 26.54%, #FF5C87 58.58%)",
           padding: "1rem",
           borderRadius: "0.65rem",
         }}
       >
         {disStr}
       </p>
+      <Spellout str={disStr} />
     </div>
   );
 }
@@ -174,7 +217,7 @@ function ChatOfHuman({ disStr }) {
     >
       <p
         style={{
-          backgroundColor: "#69FF6B",
+          backgroundColor: "rgb(8 205 27 / 55%)",
           padding: "1rem",
           borderRadius: "0.65rem",
           color: "white",
@@ -186,30 +229,56 @@ function ChatOfHuman({ disStr }) {
     </div>
   );
 }
-function TextField({ userCurrentChat, setUserCurrentChat }) {
+function TextField({
+  setUserCurrentChat,
+  listening,
+  transcript,
+  resetTranscript,
+  browserSupportsSpeechRecognition,
+}) {
   const [inpState, setInpState] = useState("");
+  console.log(Boolean(inpState));
+
   function submitHandler(e) {
     e.preventDefault();
-    setUserCurrentChat((old) => (old = inpState));
+    setUserCurrentChat((old) => (old = inpState ? inpState : transcript));
   }
   return (
-    <div className="absolute bottom-9 mx-auto flex w-[95%] ">
-      <form onSubmit={submitHandler} className="w-[98%] ml-10 mx-auto">
+    <div>
+      <form
+        onSubmit={submitHandler}
+        style={{
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginTop: "8vh",
+        }}
+        className="w-[95%] flex    mx-auto"
+      >
         <input
-          value={inpState}
-          onChange={(e) => setInpState(e.target.value)}
+          value={inpState ? inpState : transcript}
+          onChange={(e) => {
+            resetTranscript();
+            setInpState(e.target.value);
+          }}
           type="text"
-          className="rounded-lg w-[98%] h-10 mr-3 "
+          className="rounded-lg w-[91%] h-10 mr-3 "
+          style={{ backgroundColor: "#c3c3c3" }}
         />
+        {browserSupportsSpeechRecognition && (
+          <Speak
+            inpState={inpState}
+            setInpState={setInpState}
+            listening={listening}
+            transcript={transcript}
+            resetTranscript={resetTranscript}
+          />
+        )}
 
         <button type="submit" className="relative">
           <FontAwesomeIcon
-            icon={faMicrophone}
-            className="absolute right-10 bottom-0 text-blue-500 h-5 "
-          />
-          <FontAwesomeIcon
             icon={faArrowRight}
-            className=" bg-blue-500 text-white absolute p-3 w-8 h-4 -bottom-3 rounded-lg"
+            style={{ marginRight: "20px", marginLeft: "20px" }}
+            className="  bg-blue-500 text-white  p-3 w-8 h-4  rounded-lg"
           />
         </button>
       </form>
@@ -217,19 +286,33 @@ function TextField({ userCurrentChat, setUserCurrentChat }) {
   );
 }
 
-/* Niche diye functions abhi use nhi huye hain inhe api call ke time hee use karna  */
-/* 1st function --> loading gif over glass effect 
-   2nd function --> Pause button for stopping bot for further generating the answer
-   3rd function --> When the bot is typing we can use this
-
-*/
-
-/* Ye component hai ab bus ek loading ka useState variable bna lio bool type starting mein false assign karde fir jab jab fetch kare tab isse true kar aur fetch hone ke baad false karde ye apne apne aap show ho jayega */
 function Spinner() {
   return (
-    <div className="glassType2">
-      <div className="spinner  "></div>
+    <div style={{ height: "20vh" }} className="glassType2">
+      <div className="spinner"></div>
     </div>
+  );
+}
+function Speak({
+  inpState,
+  listening,
+  transcript,
+  resetTranscript,
+  setInpState,
+}) {
+  function recorder() {
+    if (!listening) {
+      resetTranscript();
+      SpeechRecognition.startListening();
+    } else {
+      SpeechRecognition.stopListening();
+    }
+  }
+
+  return (
+    <i onClick={recorder}>
+      <FontAwesomeIcon icon={faMicrophone} className=" text-blue-500 h-5 " />
+    </i>
   );
 }
 
@@ -246,10 +329,34 @@ function PauseBtn() {
 }
 
 /* ab iss function ko har uss ai bot ke aage lagana hai ye bhi tabhi apply karna padega jab ap call ho rhi hogi aur jab bot kuch data type kar rha hoga */
-function Speaking() {
+function SpeakingGif() {
   return (
-    <div>
-      <FontAwesomeIcon icon={faEllipsis} className=" ml-5 text-white h-5 " />
+    <div style={{ position: "absolute" }} className="glassType2">
+      <div className="spinner2"></div>
     </div>
+  );
+}
+function Spellout({ str }) {
+  const [isSpeaking, setIsSpeaking] = useState(false);
+  function spell() {
+    if (!isSpeaking) {
+      setIsSpeaking(true);
+      window.speechSynthesis.cancel();
+      let speech = new SpeechSynthesisUtterance();
+      speech.text = str;
+      window.speechSynthesis.speak(speech);
+    } else if (isSpeaking) {
+      setIsSpeaking(false);
+      window.speechSynthesis.cancel();
+    }
+  }
+
+  return (
+    <p style={{ marginLeft: "5px" }} onClick={spell}>
+      <FontAwesomeIcon
+        icon={faVolumeHigh}
+        style={{ fontSize: "1.5rem", color: "rgb(13, 131, 240)" }}
+      />
+    </p>
   );
 }
