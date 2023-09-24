@@ -8,6 +8,7 @@ import LOGO from "./images/ham.png";
 import human from "./images/humanchat.png";
 import aires from "./images/ai2.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+
 import {
   faEllipsis,
   faPause,
@@ -22,6 +23,14 @@ import SpeechRecognition, {
 
 function App() {
   const [userCurrentChat, setUserCurrentChat] = useState("");
+  useEffect(() => {
+    window.addEventListener("beforeunload", function (e) {
+      // Make an AJAX request to clear the session
+      var xhr = new XMLHttpRequest();
+      xhr.open("GET", "http://192.168.112.1:8000/clear-session", false);
+      xhr.send();
+    });
+  }, []);
   return (
     <div>
       <Header />
@@ -74,7 +83,7 @@ function ChatHistoryContainer({ style, userCurrentChat, setUserCurrentChat }) {
 
   const [err, setErr] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const url = "http://127.0.0.1:8000/";
+  const url = "http://127.0.0.1:8000";
   const {
     transcript,
     listening,
@@ -97,6 +106,7 @@ function ChatHistoryContainer({ style, userCurrentChat, setUserCurrentChat }) {
               "Content-Type": "application/json", // Set the content type according to your API's requirements
             },
             body: JSON.stringify(data), // Convert data to JSON format
+            credentials: "include",
             signal: controlerOfRequest.signal,
           };
           setIsLoading(true);
