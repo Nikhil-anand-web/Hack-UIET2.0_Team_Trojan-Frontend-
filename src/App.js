@@ -83,7 +83,7 @@ function ChatHistoryContainer({ style, userCurrentChat, setUserCurrentChat }) {
 
   const [err, setErr] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const url = "http://127.0.0.1:8000";
+  const url = "https://f202-14-139-235-210.ngrok-free.app/";
   const {
     transcript,
     listening,
@@ -92,6 +92,9 @@ function ChatHistoryContainer({ style, userCurrentChat, setUserCurrentChat }) {
   } = useSpeechRecognition();
   // const url = "google.com";
   const refLast = useRef(null);
+  useEffect(() => {
+    refLast.current.scrollIntoView({ behavior: "smooth" });
+  }, [ch, isLoading]);
   useEffect(
     function caller() {
       const controlerOfRequest = new AbortController();
@@ -171,6 +174,7 @@ function ChatHistoryContainer({ style, userCurrentChat, setUserCurrentChat }) {
           )}
 
           {isLoading && <Spinner />}
+          <p ref={refLast}></p>
         </div>
       </div>
       {listening && <SpeakingGif />}
@@ -256,6 +260,7 @@ function TextField({
   return (
     <div>
       <form
+        id="frm"
         onSubmit={submitHandler}
         style={{
           justifyContent: "space-between",

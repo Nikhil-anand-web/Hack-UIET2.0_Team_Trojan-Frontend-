@@ -7,8 +7,6 @@
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     /* border-radius: 20px; */
-    border:1px solid white;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
 }
 .glassType2{
   
@@ -36,6 +34,12 @@
   .spinner {
     width: 10px;
     height: 10px;
+  }
+  #frm{
+    margin-top: 5vh!important;
+  }
+  .glass{
+    height: 89vh;
   }
  
   #logoHide{
