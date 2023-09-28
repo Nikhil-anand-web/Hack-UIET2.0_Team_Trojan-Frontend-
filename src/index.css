@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@700&display=swap');
+
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
@@ -7,6 +10,11 @@
     backdrop-filter: blur(10px);
     -webkit-backdrop-filter: blur(10px);
     /* border-radius: 20px; */
+}
+.burgerGlass{
+    background: #ffffffa2;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
 }
 .glassType2{
   
@@ -25,6 +33,7 @@
   width: 11.4px;
   height: 11.4px;
   /* padding-block: 50px; */
+  /* color: rgb(72, 72, 72); */
   
 }
 
@@ -41,13 +50,29 @@
   .glass{
     height: 89vh;
   }
- 
-  #logoHide{
-    /* visibility: hidden; */
-    display: none!important;
+  #menuBar{
+    width: 50%;
+    height: 45vh;
+    font-size: large;
   }
 
 }
+
+.aboutHead {
+  font-family: 'Poppins', sans-serif;
+}
+
+
+@media (max-width: 760px){
+  #logoHide{
+    /* visibility: hidden; */
+    display: none !important;
+  }
+  .logo{
+    width: 100%;
+  }
+}
+
 
 
 .spinner::before,

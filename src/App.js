@@ -8,6 +8,8 @@ import LOGO from "./images/ham.png";
 import human from "./images/humanchat.png";
 import aires from "./images/ai2.png";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { About } from "./components/About";
+import { Link } from "react-router-dom";
 
 import {
   faEllipsis,
@@ -20,6 +22,8 @@ import {
 import SpeechRecognition, {
   useSpeechRecognition,
 } from "react-speech-recognition";
+import { Route, Routes } from "react-router-dom";
+import Burger from "./components/Burger";
 
 function App() {
   const [userCurrentChat, setUserCurrentChat] = useState("");
@@ -32,13 +36,13 @@ function App() {
     });
   }, []);
   return (
-    <div>
+    <div className="h-full">
       <Header />
 
-      <ChatHistoryContainer
-        userCurrentChat={userCurrentChat}
-        setUserCurrentChat={setUserCurrentChat}
-      />
+      <Routes>
+        <Route path="/about" element={<About />} />
+        <Route path="/" element={<ChatHistoryContainer />} />
+      </Routes>
     </div>
   );
 }
@@ -54,23 +58,40 @@ function Header({ imageheight, style }) {
         // backgroundImage:
         //   "linear-gradient(83.84deg, #0088FF -6.87%, #A033FF 26.54%, #FF5C87 58.58%)",
 
-        height: "60px",
+        height: "80px",
         display: "flex",
         justifyContent: "space-between",
+        alignItems: "center",
+        gap: "10px",
       }}
-      className="md:flex-wrap sm:flex-wrap"
+      className="md:flex-wrap sm:flex-wrap "
     >
-      <img style={{ height: "50px", marginLeft: "8px" }} src={justis} alt="" />
-      <img style={{ height: "50px", marginLeft: "8px" }} src={LOGO} alt="" />
+      <div className="flex items-center w-[50%] logo">
+        <Burger />
+        <div className="flex justify-between w-[90%]  ">
+          <img
+            style={{ height: "50px", marginLeft: "8px" }}
+            src={justis}
+            alt=""
+          />
+          <img
+            style={{ height: "50px", marginLeft: "8px" }}
+            src={LOGO}
+            alt=""
+            // className=" "
+          />
+        </div>
+      </div>
+
       <div id="logoHide" style={{ display: "flex" }}>
         <img style={{ height: "50px", marginLeft: "8px" }} src={Mki} alt="" />
         <img
-          style={{ height: "50px", marginLeft: "8px" }}
+          style={{ height: "50px", marginLeft: "8px",paddingLeft:"2px" }}
           src={skillIndia}
           alt=""
         />
         <img
-          style={{ height: "50px", marginLeft: "8px" }}
+          style={{ height: "50px", marginLeft: "6px" }}
           src={digitalIndia}
           alt=""
         />
@@ -140,7 +161,7 @@ function ChatHistoryContainer({ style, userCurrentChat, setUserCurrentChat }) {
   return (
     <div
       style={{ width: "100%", justifyContent: "center" }}
-      className="glass  h-[92vh] md:flex-wrap "
+      className="glass  h-[85vh] md:flex-wrap "
     >
       <div
         style={{
