@@ -30,9 +30,9 @@ function App() {
   useEffect(() => {
     window.addEventListener("beforeunload", function (e) {
       // Make an AJAX request to clear the session
-      var xhr = new XMLHttpRequest();
-      xhr.open("GET", "http://192.168.112.1:8000/clear-session", false);
-      xhr.send();
+      fetch(
+        "https://83bc-2402-3a80-4389-8021-80bf-cc1a-2791-aff.ngrok-free.app/"
+      );
     });
   }, []);
   return (
@@ -41,7 +41,7 @@ function App() {
 
       <Routes>
         <Route path="/about" element={<About />} />
-        <Route path="/" element={<ChatHistoryContainer />} />
+        <Route path="/" element={<ChatHistoryContainer userCurrentChat={userCurrentChat} setUserCurrentChat={setUserCurrentChat} />} />
       </Routes>
     </div>
   );
@@ -86,7 +86,7 @@ function Header({ imageheight, style }) {
       <div id="logoHide" style={{ display: "flex" }}>
         <img style={{ height: "50px", marginLeft: "8px" }} src={Mki} alt="" />
         <img
-          style={{ height: "50px", marginLeft: "8px",paddingLeft:"2px" }}
+          style={{ height: "50px", marginLeft: "8px", paddingLeft: "2px" }}
           src={skillIndia}
           alt=""
         />
@@ -104,7 +104,8 @@ function ChatHistoryContainer({ style, userCurrentChat, setUserCurrentChat }) {
 
   const [err, setErr] = useState("");
   const [isLoading, setIsLoading] = useState(false);
-  const url = "https://f202-14-139-235-210.ngrok-free.app/";
+  const url =
+    "https://83bc-2402-3a80-4389-8021-80bf-cc1a-2791-aff.ngrok-free.app/";
   const {
     transcript,
     listening,
