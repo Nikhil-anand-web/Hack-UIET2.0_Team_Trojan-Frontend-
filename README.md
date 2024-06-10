@@ -16,9 +16,10 @@ This project is a web application designed to generate human-like responses to u
 
 ## Features
 
-- Human-like Responses
-- Context Maintenance
-- Text-to-Speech and Speech-to-Text
+- **Human-like Responses**: Provides responses to legal questions within the context of Indian laws.
+- **Context Maintenance**: Remembers the context of the conversation and generates appropriate responses.
+- **Text-to-Speech and Speech-to-Text**: Converts text responses to speech and transcribes spoken queries into text.
+
 
 
 
